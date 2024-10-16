@@ -5,9 +5,6 @@ import Header from "@/app/components/Header";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
 import { PokemonData, PokemonDetailsProps } from "@/app/types/PokemonTypes";
 
-// Define types for the Pokemon data structure
-
-// Fetch Pokemon Data with typed return value
 async function getPokemonData(name: string): Promise<PokemonData> {
   const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
   return response.data;
@@ -16,20 +13,14 @@ async function getPokemonData(name: string): Promise<PokemonData> {
 export default async function PokemonDetails({ params }: PokemonDetailsProps) {
   const pokemon = await getPokemonData(params.name);
 
-  console.log("pokemon", pokemon);
-
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header Section */}
       <Header title={"Pokemon Details"} />
 
-      {/* Breadcrumbs */}
       <Breadcrumbs pokemonName={pokemon.name} />
 
-      {/* Pokemon Details Card */}
       <div className="flex justify-center mt-4 p-6">
         <div className="max-w-md w-full bg-white shadow-lg rounded-xl overflow-hidden">
-          {/* Pokemon Image */}
           <div className="bg-teal-100 p-6">
             <Image
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
@@ -41,7 +32,6 @@ export default async function PokemonDetails({ params }: PokemonDetailsProps) {
             />
           </div>
 
-          {/* Pokemon Details */}
           <div className="bg-yellow-200 p-6 text-gray-700">
             <p className="mb-2">
               <strong className="font-bold">Name:</strong> {pokemon.name}
@@ -59,8 +49,12 @@ export default async function PokemonDetails({ params }: PokemonDetailsProps) {
               {pokemon.abilities.map((a) => a.ability.name).join(", ")}
             </p>
             <p className="mb-4">
-              <strong className="font-bold">Some Moves:</strong> swords-dance,
-              cut, bind, vine-whip, headbutt
+              <strong className="font-bold">Moves:</strong>{" "}
+              {pokemon.moves
+                .slice(0, 5)
+                .map((moveObj: any) => moveObj.move.name)
+                .join(", ")}
+              {pokemon.moves.length > 5 && " ..."}
             </p>
           </div>
         </div>

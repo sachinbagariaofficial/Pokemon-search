@@ -2,7 +2,6 @@
 
 import { useState, useEffect, ChangeEvent } from "react";
 import axios from "axios";
-
 import { POKEMON_TYPE_ENDPOINT } from "../api";
 import { PokemonType, SearchFormProps } from "../types/PokemonTypes";
 
@@ -12,7 +11,7 @@ const SearchForm = ({ onSearch, pokemons }: SearchFormProps) => {
   const [selectedType, setSelectedType] = useState<string>("");
   const [warning, setWarning] = useState<string>("");
 
-  // Fetch Pokemon types
+  // Fetch Pokémon types
   useEffect(() => {
     const fetchTypes = async () => {
       try {
@@ -26,17 +25,17 @@ const SearchForm = ({ onSearch, pokemons }: SearchFormProps) => {
     fetchTypes();
   }, []);
 
-  //This function is for handling the search
+  // This function is for handling the search
   const handleSearch = () => {
     if (!searchTerm.trim() && !selectedType) {
-      setWarning("Please enter a Pokémon name.");
+      setWarning("Please enter a Pokémon name or select a type.");
     } else {
       setWarning("");
-      onSearch({ type: selectedType, name: searchTerm });
+      onSearch({ type: "", name: searchTerm });
     }
   };
 
-  // We can reset our search result
+  // Reset the search result
   const handleReset = () => {
     setSelectedType("");
     setSearchTerm("");
@@ -59,7 +58,7 @@ const SearchForm = ({ onSearch, pokemons }: SearchFormProps) => {
           onChange={(e) => setSelectedType(e.target.value)}
           className="p-2 border border-gray-300 rounded-md w-full md:w-40"
         >
-          <option value="">Select</option>
+          <option value="">Select Type</option>
           {types.map((type: any) => (
             <option key={type.name} value={type.name}>
               {type.name}
@@ -71,7 +70,7 @@ const SearchForm = ({ onSearch, pokemons }: SearchFormProps) => {
           type="text"
           value={searchTerm}
           onChange={handleInputChange}
-          placeholder="Search..."
+          placeholder="Search Pokémon..."
           className="p-2 border border-gray-300 rounded-md flex-grow w-full"
         />
 

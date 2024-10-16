@@ -37,6 +37,7 @@ export type PokemonData = {
     types: PokemonType[];
     stats: PokemonStat[];
     abilities: PokemonAbility[];
+    moves: string[]
 };
 
 export type SearchFormProps = {
