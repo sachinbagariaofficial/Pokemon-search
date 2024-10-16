@@ -26,7 +26,6 @@ const PokemonList: React.FC<PokemonListProps> = ({ filter, pokemons }) => {
   };
 
   const fetchPokemons = () => {
-    setIsLoading(true);
     const filtered = pokemons.filter(
       (pokemon) => matchesType(pokemon) && matchesName(pokemon)
     );
@@ -35,6 +34,7 @@ const PokemonList: React.FC<PokemonListProps> = ({ filter, pokemons }) => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchPokemons();
   }, [filter, pokemons]);
 
