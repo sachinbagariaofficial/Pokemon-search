@@ -39,7 +39,7 @@ const PokemonList: React.FC<PokemonListProps> = ({ filter, pokemons }) => {
   }, [filter, pokemons]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-8 mt-12">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 mt-12">
       {isLoading ? (
         <div className="col-span-full text-center p-4">
           <p className="text-blue-500">Loading...</p>

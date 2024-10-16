@@ -51,7 +51,9 @@ const SearchForm = ({ onSearch, pokemons }: SearchFormProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center mt-8 w-full">
+    <div className="flex flex-col items-center mt-8 w-full md:sticky md:top-5 z-10 px-6">
+      {" "}
+      {/* Add sticky class */}
       <div className="bg-gray-100 p-4 rounded-lg shadow-md flex flex-col md:flex-row gap-4 w-full max-w-4xl mb-4">
         <select
           value={selectedType}
@@ -88,7 +90,6 @@ const SearchForm = ({ onSearch, pokemons }: SearchFormProps) => {
           Reset
         </button>
       </div>
-
       {warning && <p className="text-red-500 mt-2">{warning}</p>}
     </div>
   );
