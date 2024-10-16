@@ -3,31 +3,38 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Filter, Pokemon } from "../types/PokemonTypes";
 
-const PokemonList = ({ filter, pokemons }) => {
-  const [filteredPokemons, setFilteredPokemons] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+interface PokemonListProps {
+  filter: Filter;
+  pokemons: Pokemon[];
+}
+
+const PokemonList: React.FC<PokemonListProps> = ({ filter, pokemons }) => {
+  const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const matchesType = (pokemon: Pokemon) => {
+    return (
+      !filter.type ||
+      pokemon.types?.some((type: any) => type.name === filter.type)
+    );
+  };
+
+  const matchesName = (pokemon: Pokemon) => {
+    return pokemon.name.toLowerCase().includes(filter.name.toLowerCase());
+  };
+
+  const fetchPokemons = () => {
+    setIsLoading(true);
+    const filtered = pokemons.filter(
+      (pokemon) => matchesType(pokemon) && matchesName(pokemon)
+    );
+    setFilteredPokemons(filtered);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const matchesType = (pokemon) => {
-      return (
-        !filter.type || pokemon.types?.some((type) => type.name === filter.type)
-      );
-    };
-
-    const matchesName = (pokemon) => {
-      return pokemon.name.toLowerCase().includes(filter.name.toLowerCase());
-    };
-
-    const fetchPokemons = () => {
-      setIsLoading(true); // Set loading to true before filtering
-      const filtered = pokemons.filter(
-        (pokemon) => matchesType(pokemon) && matchesName(pokemon)
-      );
-      setFilteredPokemons(filtered);
-      setIsLoading(false); // Set loading to false after filtering
-    };
-
     fetchPokemons();
   }, [filter, pokemons]);
 
@@ -53,7 +60,7 @@ const PokemonList = ({ filter, pokemons }) => {
                     width={150}
                     height={150}
                     className="object-contain"
-                    style={{ width: "150px", height: "150px" }}
+                    loading="lazy"
                   />
                 </div>
                 <div className="bg-[#fafafa] flex flex-col gap-6 text-start capitalize p-8">
@@ -71,7 +78,7 @@ const PokemonList = ({ filter, pokemons }) => {
         })
       ) : (
         <div className="col-span-full text-center p-4">
-          <p className="text-red-500">No results found. Please try again!</p>{" "}
+          <p className="text-red-500">No results found. Please try again!</p>
         </div>
       )}
     </div>

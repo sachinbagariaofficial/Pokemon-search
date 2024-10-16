@@ -4,6 +4,9 @@ import SearchForm from "./components/SearchForm";
 import PokemonList from "./components/PokemonList";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Header from "./components/Header";
+import { POKEMON_LIST_ENDPOINT } from "./api";
+import { Filter } from "./types/PokemonTypes";
 
 export default function HomePage() {
   const [pokemons, setPokemons] = useState([]);
@@ -12,9 +15,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchPokemons = async () => {
       try {
-        const response = await axios.get(
-          "https://pokeapi.co/api/v2/pokemon?limit=20"
-        );
+        const response = await axios.get(POKEMON_LIST_ENDPOINT(0, 20));
         setPokemons(response.data.results);
       } catch (error) {
         console.error("Error fetching pokemons:", error);
@@ -24,12 +25,14 @@ export default function HomePage() {
     fetchPokemons();
   }, []);
 
-  const handleSearch = (searchFilter) => {
+  // This function is for handling the search input result //
+  const handleSearch = (searchFilter: Filter) => {
     setFilter(searchFilter);
   };
 
   return (
-    <div className="p-8 ">
+    <div>
+      <Header title={"Pokemon"} />
       <SearchForm onSearch={handleSearch} pokemons={pokemons} />
       <PokemonList filter={filter} pokemons={pokemons} />
     </div>

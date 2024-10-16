@@ -1,18 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import axios from "axios";
 
-const SearchForm = ({ onSearch, pokemons }) => {
-  const [types, setTypes] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [warning, setWarning] = useState(""); // State for warning message
+import { POKEMON_TYPE_ENDPOINT } from "../api";
+import { PokemonType, SearchFormProps } from "../types/PokemonTypes";
 
+const SearchForm = ({ onSearch, pokemons }: SearchFormProps) => {
+  const [types, setTypes] = useState<PokemonType[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<string>("");
+  const [warning, setWarning] = useState<string>("");
+
+  // Fetch Pokemon types
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const response = await axios.get("https://pokeapi.co/api/v2/type");
+        const response = await axios.get(POKEMON_TYPE_ENDPOINT);
         setTypes(response.data.results);
       } catch (error) {
         console.error("Error fetching types:", error);
@@ -22,73 +26,70 @@ const SearchForm = ({ onSearch, pokemons }) => {
     fetchTypes();
   }, []);
 
+  //This function is for handling the search
   const handleSearch = () => {
     if (!searchTerm.trim() && !selectedType) {
-      setWarning("Please enter a Pokémon name or select a type."); // Set warning message
+      setWarning("Please enter a Pokémon name.");
     } else {
-      setWarning(""); // Clear warning message
+      setWarning("");
       onSearch({ type: selectedType, name: searchTerm });
     }
   };
 
+  // We can reset our search result
   const handleReset = () => {
     setSelectedType("");
     setSearchTerm("");
-    setWarning(""); // Clear warning message on reset
-    onSearch({ type: "", name: "" }); // Reset filter in parent
+    setWarning("");
+    onSearch({ type: "", name: "" });
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     if (e.target.value.trim()) {
-      setWarning(""); // Clear warning message when typing
+      setWarning("");
     }
   };
 
   return (
-    <div className="flex flex-col items-center mt-8">
-      <div className="bg-gray-100 p-4 rounded-lg shadow-md flex gap-4 mb-4">
-        {/* Dropdown for selecting type */}
+    <div className="flex flex-col items-center mt-8 w-full">
+      <div className="bg-gray-100 p-4 rounded-lg shadow-md flex flex-col md:flex-row gap-4 w-full max-w-4xl mb-4">
         <select
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md w-40"
+          className="p-2 border border-gray-300 rounded-md w-full md:w-40"
         >
           <option value="">Select</option>
-          {types.map((type) => (
+          {types.map((type: any) => (
             <option key={type.name} value={type.name}>
               {type.name}
             </option>
           ))}
         </select>
 
-        {/* Search input field */}
         <input
           type="text"
           value={searchTerm}
-          onChange={handleInputChange} // Use the new input change handler
+          onChange={handleInputChange}
           placeholder="Search..."
-          className="p-2 border border-gray-300 rounded-md flex-grow"
+          className="p-2 border border-gray-300 rounded-md flex-grow w-full"
         />
 
-        {/* Search button */}
         <button
           onClick={handleSearch}
-          className="bg-[#004368] text-white px-4 py-2 rounded-md hover:bg-blue-900"
+          className="bg-[#004368] text-white px-4 py-2 rounded-md hover:bg-blue-900 w-full md:w-auto min-w-fit"
         >
           Search Pokemon
         </button>
 
-        {/* Reset button */}
         <button
           onClick={handleReset}
-          className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+          className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-600 w-full md:w-auto min-w-fit"
         >
           Reset
         </button>
       </div>
 
-      {/* Warning message for empty search */}
       {warning && <p className="text-red-500 mt-2">{warning}</p>}
     </div>
   );
